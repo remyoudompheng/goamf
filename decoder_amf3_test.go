@@ -218,3 +218,31 @@ func TestDecodeAmf3Object(t *testing.T) {
 		t.Errorf("expected baz to be nil, got: %+v", to["baz"])
 	}
 }
+
+func TestDecodeAmf3ObjectDynamic(t *testing.T) {
+	buf := bytes.NewReader([]byte{
+		0x0a, 0x0b, 0x01,
+		0x07, 'b', 'a', 'z', 0x01,
+		0x07, 'f', 'o', 'o', 0x06, 0x07, 'b', 'a', 'r',
+		0x01, // terminating empty string
+	})
+
+	dec := new(Decoder)
+	got, err := dec.DecodeAmf3(buf)
+	if err != nil {
+		t.Errorf("err: %s", err)
+	}
+
+	to, ok := got.(Object)
+	if ok != true {
+		t.Error("unable to cast object as typed object")
+	}
+
+	if to["foo"] != "bar" {
+		t.Errorf("expected foo to be bar, got: %+v", to["foo"])
+	}
+
+	if to["baz"] != nil {
+		t.Errorf("expected baz to be nil, got: %+v", to["baz"])
+	}
+}

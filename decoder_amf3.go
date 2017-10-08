@@ -130,6 +130,10 @@ func (d *Decoder) DecodeAmf3String(r io.Reader, decodeMarker bool) (result strin
 		return
 	}
 
+	if refVal == 0 {
+		return "", nil
+	}
+
 	buf := make([]byte, refVal)
 	_, err = r.Read(buf)
 	if err != nil {
